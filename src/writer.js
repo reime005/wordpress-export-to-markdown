@@ -26,7 +26,7 @@ async function processPayloadsPromise(payloads, loadFunc, config) {
 			}
 		}, payload.delay);
 	}));
-	
+
 	const results = await Promise.allSettled(promises);
 	const failedCount = results.filter(result => result.status === 'rejected').length;
 	if (failedCount === 0) {

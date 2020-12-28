@@ -50,6 +50,8 @@ function collectPosts(data, config) {
 			frontmatter: {
 				title: getPostTitle(post),
 				date: getPostDate(post),
+				description: "",
+				slug: getPostSlug(post),
 				categories: getCategories(post),
 				tags: getTags(post)
 			},
@@ -163,7 +165,7 @@ function mergeImagesIntoPosts(images, posts) {
 			// this image was set as the featured image for this post
 			if (image.id === post.meta.coverImageId) {
 				shouldAttach = true;
-				post.frontmatter.coverImage = shared.getFilenameFromUrl(image.url);
+				post.frontmatter.cover_image = `https://mariusreimer.com/images/${shared.getFilenameFromUrl(image.url)}`;
 			}
 
 			if (shouldAttach && !post.meta.imageUrls.includes(image.url)) {

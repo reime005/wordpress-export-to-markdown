@@ -16,6 +16,16 @@ function initTurndownService() {
 		replacement: (content, node) => '\n\n' + node.outerHTML
 	});
 
+	// trash
+	turndownService.addRule('trash', {
+		filter: node => {
+			return (
+				(node.getAttribute('class') === 'panel-layout')
+			);
+		},
+		replacement: (content, node) => ''
+	});
+
 	// preserve embedded codepens
 	turndownService.addRule('codepen', {
 		filter: node => {
@@ -30,10 +40,26 @@ function initTurndownService() {
 		replacement: (content, node) => '\n\n' + node.outerHTML
 	});
 
+	// preserve embedded codepens
+	turndownService.addRule('code', {
+		filter: node => {
+			return (
+				['PRE'].includes(node.nodeName) &&
+				(node.getAttribute('class') === 'EnlighterJSRAW' || node.getAttribute("lang"))
+			);
+		},
+		replacement: (content, node) => '\n\n`gist:reime005/`\n\n<code>' + node.innerHTML + '</code>\n\n'
+	});
+
 	// preserve embedded scripts (for tweets, codepens, gists, etc.)
 	turndownService.addRule('script', {
 		filter: 'script',
 		replacement: (content, node) => {
+			if (/gist/.test(node.getAttribute('src'))) {
+				const id = node.getAttribute('src').match(/reime005\/(.*)\.js/i)[1];
+				return `\n\n\`gist:reime005/${id}\`\n\n`;
+			}
+
 			let before = '\n\n';
 			if (node.previousSibling && node.previousSibling.nodeName !== '#text') {
 				// keep twitter and codepen <script> tags snug with the element above them
